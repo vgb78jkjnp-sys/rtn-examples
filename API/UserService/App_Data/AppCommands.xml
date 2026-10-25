@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<COMMANDS>
+	<COMMAND id="VALIDATEUSERID" transactiontype="READ" outputtype="" viewid="" comment="" >
+		<ACTION id="1" beanname="USERBEAN" transaction="USER" action="CHECK_IF_USERID_EXISTS" />
+	</COMMAND>
+	<COMMAND id="VALIDATEUSERLOGIN" transactiontype="READ" outputtype="" viewid="" comment="" >
+		<ACTION id="1" beanname="USERBEAN" transaction="USER" action="CHECK_USER_ACCESS" />
+	</COMMAND>
+	<COMMAND id="GETUSERACCESS" transactiontype="READ" outputtype="" viewid="" comment="" >
+		<ACTION id="1" beanname="USERBEAN" transaction="USER" action="READ_USER_ACCESS" />
+	</COMMAND>
+</COMMANDS>

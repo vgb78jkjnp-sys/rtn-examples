@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<COMMANDS>
+	<COMMAND id="GETPARTMASTERROWS" transactiontype="READ" outputtype="" viewid="" comment="">
+		<ACTION id="1" beanname="PARTMASTERBEAN" transaction="PARTMASTER" action="READ_BY_PARTID_VENDORLOT_VENDORSHIPLOT_PARTNUMBER" />
+	</COMMAND>
+	<COMMAND id="GETPARTASSEMBLYTREEBYVENDORLOT" transactiontype="READ" outputtype="" viewid="" comment="">
+		<ACTION id="1" beanname="PARTASSEMBLYBEAN" transaction="PARTASSEMBLY" action="READ_TREE_BY_VENDORLOT" />
+	</COMMAND>
+	<COMMAND id="GETPARTASSEMBLYPARTDETAIL" transactiontype="READ" outputtype="" viewid="" comment="">
+		<ACTION id="1" beanname="PARTASSEMBLYBEAN" transaction="PARTASSEMBLYPARTDETAIL" action="READ_PART_DETAIL" />
+	</COMMAND>
+</COMMANDS>

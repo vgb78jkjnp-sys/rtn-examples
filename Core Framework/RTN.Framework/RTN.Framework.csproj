@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
+    <Version>1.0.0-alpha.4</Version>
+	<PackageId>RTN.Framework</PackageId>
+	<Authors>Roger Norman</Authors>
+	<Company>RTN Inc.</Company>
+    <Description>Data and utility classes for data, file operations and rotating logging for .NET Standard 2.0.</Description>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<RepositoryUrl>tbd</RepositoryUrl>
+	<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<Title>Application Core Framework</Title>	  
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.72" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
+    <PackageReference Include="MongoDB.Driver" Version="3.8.0" />
+    <PackageReference Include="MySql.Data" Version="9.7.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Oracle.ManagedDataAccess" Version="23.26.200" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Authentication\README.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>README.md</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Authentication\README.md">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>README.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <Target Name="CopyToLocalFeed" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">
+	<PropertyGroup>
+	  <LocalFeedRoot>$(MSBuildThisFileDirectory)..\..\SharedPackages\</LocalFeedRoot>
+	  <PackageFileName>$(PackageId).$(Version).nupkg</PackageFileName>
+	</PropertyGroup>
+	<Copy SourceFiles="$(PackageOutputPath)$(PackageFileName)" DestinationFolder="$(LocalFeedRoot)" />
+  </Target>
+
+</Project>

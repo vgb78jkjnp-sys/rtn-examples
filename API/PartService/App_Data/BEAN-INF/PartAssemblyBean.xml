@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<DATABEAN NAME="PARTASSEMBLYBEAN" DATASOURCE="Manufacturing">
+	<TRANSACTIONS>
+		<TRANSACTION NAME="PARTASSEMBLY">
+			<ACTIONS>
+				<ACTION NAME="READ_TREE_BY_VENDORLOT" TYPE="S">
+					<STATEMENT>
+						WITH Parts(
+						  PartId
+						 ,VendorLot
+						 ,ParentVendorLot
+						 ,PartNumber
+						 ,PartNumberRev
+						 ,Description
+						 ,PartNumberSort
+						 ,PartPartId
+						 ,PartVendorLot
+						 ,PartPartnumber
+						 ,PartPartnumberRev
+						 ,PartDescription
+						 ,PartPartType
+						 ,Quantity
+						 ,PartAssyLevel
+						 ,PartAssyLot
+						 ,ParentPartId
+						)
+						AS (
+						SELECT
+						   convert(varchar(255),PartMaster_1.PartId)
+						  ,convert(varchar(255),PartMaster_1.VendorLot)
+						  ,convert(varchar(255),PartMaster_1.VendorLot)
+						  ,convert(varchar(255),PartNumber_1.PartNumber)
+						  ,convert(varchar(255),PartNumber_1.PartNumberRev)
+						  ,convert(varchar(255),PartNumber_1.Description)
+						  ,convert(varchar(255),PartMaster_1.PartNumber + ' | ' + PartMaster_2.PartNumber)
+						  ,PartMaster_2.PartId
+						  ,PartMaster_2.VendorLot
+						  ,PartNumber_2.PartNumber
+						  ,PartNumber_2.PartNumberRev
+						  ,PartNumber_2.Description
+						  ,PartNumber_2.PartType
+						  ,PartAssembly_1.Quantity
+						  ,1
+						  ,convert(varchar(255),PartMaster_2.VendorLot)
+						  ,convert(varchar(255),PartMaster_1.PartId)
+						FROM PartAssembly AS PartAssembly_1 WITH (NOLOCK)
+						INNER JOIN PartMaster AS PartMaster_1 WITH (NOLOCK)
+						   ON PartAssembly_1.AssemblyPartId = PartMaster_1.PartId
+						  AND PartAssembly_1.Quantity &gt; -1
+						INNER JOIN PartNumber AS PartNumber_1 WITH (NOLOCK)
+						   ON PartMaster_1.PartNumber = PartNumber_1.PartNumber
+						  AND PartMaster_1.PartNumberRev = PartNumber_1.PartNumberRev
+						INNER JOIN PartMaster AS PartMaster_2 WITH (NOLOCK)
+						   ON PartAssembly_1.PartId = PartMaster_2.PartId
+						INNER JOIN PartNumber AS PartNumber_2 WITH (NOLOCK)
+						   ON PartMaster_2.PartNumber = PartNumber_2.PartNumber
+						  AND PartMaster_2.PartNumberRev = PartNumber_2.PartNumberRev
+						WHERE PartMaster_1.VendorLot like @VendorLot
+						UNION ALL
+						SELECT
+						   convert(varchar(255), Parts.PartId)
+						  ,convert(varchar(255), Parts.VendorLot)
+						  ,convert(varchar(255), PartMaster_1.VendorLot)
+						  ,convert(varchar(255), Parts.PartNumber)
+						  ,convert(varchar(255), Parts.PartNumberRev)
+						  ,convert(varchar(255), Parts.Description)
+						  ,convert(varchar(255), Parts.PartNumberSort + ' | ' + PartMaster_2.PartNumber)
+						  ,PartMaster_2.PartId
+						  ,PartMaster_2.VendorLot
+						  ,PartNumber_2.PartNumber
+						  ,PartNumber_2.PartNumberRev
+						  ,PartNumber_2.Description
+						  ,PartNumber_2.PartType
+						  ,PartAssembly_1.Quantity
+						  ,Parts.PartAssyLevel + 1
+						  ,convert(varchar(255), PartMaster_1.VendorLot)
+						  ,convert(varchar(255), PartMaster_1.PartId)
+						FROM PartAssembly AS PartAssembly_1 WITH (NOLOCK)
+						INNER JOIN PartMaster AS PartMaster_1 WITH (NOLOCK)
+						   ON PartAssembly_1.AssemblyPartId = PartMaster_1.PartId
+						  AND PartAssembly_1.Quantity &gt; -1
+						INNER JOIN PartNumber AS PartNumber_1 WITH (NOLOCK)
+						   ON PartMaster_1.PartNumber = PartNumber_1.PartNumber
+						  AND PartMaster_1.PartNumberRev = PartNumber_1.PartNumberRev
+						INNER JOIN PartMaster AS PartMaster_2 WITH (NOLOCK)
+						   ON PartAssembly_1.PartId = PartMaster_2.PartId
+						INNER JOIN PartNumber AS PartNumber_2 WITH (NOLOCK)
+						   ON PartMaster_2.PartNumber = PartNumber_2.PartNumber
+						  AND PartMaster_2.PartNumberRev = PartNumber_2.PartNumberRev
+						INNER JOIN Parts
+						   ON Parts.PartPartId = PartAssembly_1.AssemblyPartId
+						)
+						SELECT
+						  PartMaster_1.VendorLot
+						 ,PartMaster_1.PartId
+						 ,'' as ParentVendorLot
+						 ,PartMaster_1.PartNumber
+						 ,PartMaster_1.PartNumberRev
+						 ,PartNumber_1.Description
+						 ,PartMaster_1.VendorLot as PartAssyLot
+						 ,PartMaster_1.VendorLot as PartVendorLot
+						 ,PartMaster_1.PartNumber
+						 ,PartMaster_1.PartNumberRev
+						 ,PartNumber_1.PartType
+						 ,PartNumber_1.Description as PartDesc
+						 ,0
+						 ,PartMaster_1.PartNumber as PartNumberSort
+						 ,PartMaster_1.PartId as PartPartId
+						 ,'' as ParentPartId
+						 ,1 as Quantity
+						FROM PartMaster AS PartMaster_1 WITH (NOLOCK)
+						INNER JOIN PartNumber AS PartNumber_1 WITH (NOLOCK)
+						   ON PartMaster_1.PartNumber = PartNumber_1.PartNumber
+						  AND PartMaster_1.PartNumberRev = PartNumber_1.PartNumberRev
+						WHERE PartMaster_1.VendorLot like @VendorLot
+						UNION ALL
+						SELECT
+						  VendorLot
+						 ,PartId
+						 ,ParentVendorLot
+						 ,PartNumber
+						 ,PartNumberRev
+						 ,Description
+						 ,PartAssyLot
+						 ,PartVendorLot
+						 ,PartPartnumber
+						 ,PartPartnumberRev
+						 ,PartPartType
+						 ,PartDescription
+						 ,PartAssyLevel
+						 ,PartNumberSort
+						 ,PartPartId
+						 ,ParentPartId
+						 ,Quantity
+						from Parts
+						ORDER BY VendorLot, PartNumberSort
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="VendorLot" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+			</ACTIONS>
+		</TRANSACTION>
+		<TRANSACTION NAME="PARTASSEMBLYPARTDETAIL">
+			<ACTIONS>
+				<ACTION NAME="READ_PART_DETAIL" TYPE="S">
+					<STATEMENT>
+						SELECT
+						  pm.[PartId],
+						  pm.[PartNumber],
+						  pm.[PartNumberRev],
+						  ISNULL(pm.[Comments], '') AS [Comments],
+						  ISNULL(pn.[Description], '') AS [Description],
+						  CASE
+						    WHEN @ParentPartId IS NULL OR @ParentPartId = '' THEN NULL
+						    ELSE pa.[Quantity]
+						  END AS [QuantityAttached]
+						FROM [Manufacturing].[dbo].[PartMaster] pm WITH (NOLOCK)
+						INNER JOIN [Manufacturing].[dbo].[PartNumber] pn WITH (NOLOCK)
+						  ON pm.[PartNumber] = pn.[PartNumber]
+						 AND pm.[PartNumberRev] = pn.[PartNumberRev]
+						LEFT JOIN [Manufacturing].[dbo].[PartAssembly] pa WITH (NOLOCK)
+						  ON pa.[AssemblyPartId] = @ParentPartId
+						 AND pa.[PartId] = @PartId
+						 AND pa.[Quantity] &gt; -1
+						WHERE pm.[PartId] = @PartId
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="PartId" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="2" NAME="ParentPartId" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+			</ACTIONS>
+		</TRANSACTION>
+	</TRANSACTIONS>
+</DATABEAN>

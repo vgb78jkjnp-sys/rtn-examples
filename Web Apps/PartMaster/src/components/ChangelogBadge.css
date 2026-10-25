@@ -1,0 +1,78 @@
+.changelog-badge-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  flex-shrink: 0;
+  margin-bottom: 0.5rem;
+}
+
+.changelog-badge {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  gap: 0.5rem;
+  border: none;
+  outline: none;
+  color: #f0ad4e;
+  font-size: .80rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0px 6px rgba(240, 173, 78, 0.25);
+}
+
+.changelog-badge:hover {
+  color: #f0ad4e;
+}
+
+.changelog-badge .bi-lightbulb, .changelog-badge .bi-lightning-charge, .changelog-badge .bi-tools {
+  font-size: 1.4rem;
+  color: #f0ad4e
+}
+
+.changelog-badge:hover .bi-lightbulb, .changelog-badge:hover .bi-lightning-charge, .changelog-badge:hover .bi-tools {
+  color: #9b7b25;
+}
+
+.changelog-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.changelog-item {
+  border-bottom: 1px solid #e9ecef;
+}
+
+.changelog-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.changelog-title {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #212529;
+  margin-bottom: 0.25rem;
+}
+
+.changelog-date {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.footer-version-link {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.footer-version-link:hover {
+  color: #0d6efd;
+}

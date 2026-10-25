@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DATABEAN NAME="USERBEAN" DATASOURCE="Manufacturing">
+	<TRANSACTIONS>
+		<TRANSACTION NAME="USER">
+			<ACTIONS>
+				<ACTION NAME="CHECK_IF_USERID_EXISTS" TYPE="S">
+					<STATEMENT>select case when exists(select 1 from [User] where User_ID=@UserId) then 'Y' else 'N' end as ValidUserId</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="UserId" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+				<ACTION NAME="READ_USER_ACCESS" TYPE="S">
+					<STATEMENT>
+						Select f_ubuip.PK_Passwords,f_ubuip.User_ID,f_ubuip.First_Name+' '+f_ubuip.Last_Name as UserName,f_ubuip.First_Name,f_ubuip.Last_Name,f_ubuip.User_Password,f_ubuip.Access_Level_PK,f_ubuip.Spec_Write,'' as Email,
+						STUFF((
+						SELECT ', ' + ru.RoleId
+						FROM [Manufacturing].[dbo].[RoleUser] ru
+						WHERE ru.UserId = f_ubuip.User_ID
+						FOR XML PATH(''), TYPE
+						).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS Roles,
+						'Active' as Status
+						FROM [Manufacturing].[dbo].[UDF_UserByUserId](@UserId) f_ubuip
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="UserId" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+				<ACTION NAME="CHECK_USER_ACCESS" TYPE="S">
+					<STATEMENT>
+						Select f_ubuip.PK_Passwords,f_ubuip.User_ID,f_ubuip.First_Name+' '+f_ubuip.Last_Name as UserName,f_ubuip.First_Name,f_ubuip.Last_Name,f_ubuip.User_Password,f_ubuip.Access_Level_PK,f_ubuip.Spec_Write,'' as Email,
+						STUFF((
+						SELECT ', ' + ru.RoleId
+						FROM [Manufacturing].[dbo].[RoleUser] ru
+						WHERE ru.UserId = f_ubuip.User_ID
+						FOR XML PATH(''), TYPE
+						).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS Roles,
+						'Active' as Status
+						FROM [Manufacturing].[dbo].[UDF_UserByUserIdPassword](@UserId, @Password) f_ubuip
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="UserId" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="2" NAME="Password" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>				
+			</ACTIONS>
+		</TRANSACTION>
+	</TRANSACTIONS>
+</DATABEAN>

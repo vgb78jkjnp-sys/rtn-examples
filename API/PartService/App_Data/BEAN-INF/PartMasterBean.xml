@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<DATABEAN NAME="PARTMASTERBEAN" DATASOURCE="Manufacturing">
+	<TRANSACTIONS>
+		<TRANSACTION NAME="PARTMASTER">
+			<ACTIONS>
+				<ACTION NAME="READ_BY_PARTID_VENDORLOT_VENDORSHIPLOT_PARTNUMBER" TYPE="S">
+					<STATEMENT>
+						SELECT TOP (@MaxRows)
+						  [PartId],
+						  [VendorId],
+						  [VendorLot],
+						  [PartNumber],
+						  [PartNumberRev],
+						  [EntryDate],
+						  [EWO],
+						  [PartStatus],
+						  [EmployeeId],
+						  [LastUpdateDate],
+						  [Quantity],
+						  [CustomerPartNumber],
+						  [VendorShipLot],
+						  [VendorWaffleId],
+						  [VendorWaffleLocation]
+						FROM [Manufacturing].[dbo].[PartMaster] WITH (NOLOCK)
+						WHERE [PartId] LIKE @PartId
+						  AND [VendorLot] LIKE @VendorLot
+						  AND ISNULL([VendorShipLot], '') LIKE @VendorShipLot
+						  AND ISNULL([PartNumber], '') LIKE @PartNumber
+						ORDER BY [PartId] DESC
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="PartId" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="2" NAME="VendorLot" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="3" NAME="VendorShipLot" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="4" NAME="MaxRows" TYPE="INT"></PARAMETER>
+						<PARAMETER ID="5" NAME="PartNumber" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+			</ACTIONS>
+		</TRANSACTION>
+	</TRANSACTIONS>
+</DATABEAN>
