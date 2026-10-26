@@ -1,0 +1,32 @@
+﻿# This pipeline is triggered by the HeartBeat repository upon code changes committed to master branch and uses the 
+# webapps-pipeline-main.yml file from the Web Apps repository to automatically build and publish the HeartBeat application 
+# to the IIS Server defined in webapps-dev and/or webapps-prod environment resource.
+# 
+# Note: This is a common template for all web apps repository, it is important to ensure that TriggerRepoName parameter 
+# is set to the correct repository name for this project.
+
+trigger:
+- master
+
+resources:
+  repositories:
+    - repository: WebAppsTemplates
+      type: git
+      name: 'Web Apps/Web Apps'
+      ref: main
+
+stages:
+- template: webapps-pipeline-main.yml@WebAppsTemplates
+  parameters:
+    TriggerRepoName: BlazorTemplate
+    poolName: 'windows-latest'
+    buildConfiguration: 'Release'
+    solution: '**/*.sln'
+    publishDir: '$(Build.ArtifactStagingDirectory)/publish'
+    environmentdev: 'webapps-dev3'
+    environmentprod: 
+    - webapps-prod2
+    - webapps-scus-prod1
+    applicationRootFolder: ''
+    applicationFolder: 'BlazorTemplate'
+    netVersion: '8.x'

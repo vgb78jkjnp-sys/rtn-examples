@@ -1,0 +1,111 @@
+@page "/work-orders"
+@rendermode InteractiveServer
+@inject ApiClient Api
+
+<PageTitle>Work Orders</PageTitle>
+
+<h1>Work Orders</h1>
+<p class="request-summary">
+    <code>POST @ApiInstances.GetWorkOrderNumbers.Path</code>
+</p>
+<dl class="request-params">
+    <div>
+        <dt>WorkOrderNumbers</dt>
+        <dd>@DisplayParam("WorkOrderNumbers")</dd>
+    </div>
+    <div>
+        <dt>WorkOrderNumberWildCard</dt>
+        <dd>@DisplayParam("WorkOrderNumberWildCard")</dd>
+    </div>
+    <div>
+        <dt>OriginalWorkOrders</dt>
+        <dd>@DisplayParam("OriginalWorkOrders")</dd>
+    </div>
+    <div>
+        <dt>OriginalWorkOrderWildCard</dt>
+        <dd>@DisplayParam("OriginalWorkOrderWildCard")</dd>
+    </div>
+</dl>
+
+@if (_loading)
+{
+    <p>Loading work orders…</p>
+}
+else if (_error is not null)
+{
+    <p class="load-error" role="alert">@_error</p>
+    <button type="button" @onclick="LoadAsync">Retry</button>
+}
+else
+{
+    <p class="status-line">Status: @_status</p>
+    @if (!string.IsNullOrWhiteSpace(_message))
+    {
+        <p>@_message</p>
+    }
+
+    <ApiDatasetTable Dataset="_workOrders" />
+    <ApiDatasetTable Dataset="_parametrics" />
+    <ApiDatasetTable Dataset="_operationActive" />
+    <ApiDatasetTable Dataset="_nonWip" />
+}
+
+@code {
+    private static readonly IReadOnlyDictionary<string, object?> SampleRequest =
+        new Dictionary<string, object?>
+    {
+        ["WorkOrderNumbers"] = "XXM-00110167,XXM-00110168,XXM-00108494",
+        ["WorkOrderNumberWildCard"] = "",
+        ["OriginalWorkOrders"] = "XXM-00110167,XXM-00110168,XXM-00108494",
+        ["OriginalWorkOrderWildCard"] = ""
+    };
+
+    private readonly IReadOnlyDictionary<string, object?> _request = SampleRequest;
+    private ApiDataset? _workOrders;
+    private ApiDataset? _parametrics;
+    private ApiDataset? _operationActive;
+    private ApiDataset? _nonWip;
+    private string _status = "";
+    private string? _message;
+    private string? _error;
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        _error = null;
+        try
+        {
+            var response = await Api.InvokeAsync(ApiInstances.GetWorkOrderNumbers, _request);
+            _status = response.Status ?? "";
+            _message = response.Message;
+            _workOrders = ApiDatasetParser.Parse(response, "WORKORDER");
+            _parametrics = ApiDatasetParser.Parse(response, "WORKORDERPARAMETRICS");
+            _operationActive = ApiDatasetParser.Parse(response, "WORKORDEROPERATIONACTIVE");
+            _nonWip = ApiDatasetParser.Parse(response, "WORKORDERNONWIP");
+        }
+        catch (Exception ex)
+        {
+            _workOrders = null;
+            _parametrics = null;
+            _operationActive = null;
+            _nonWip = null;
+            _error = ex.Message;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private string DisplayParam(string name)
+    {
+        var value = _request.TryGetValue(name, out var parameter) ? parameter?.ToString() : null;
+        return string.IsNullOrEmpty(value) ? "(empty)" : value;
+    }
+}

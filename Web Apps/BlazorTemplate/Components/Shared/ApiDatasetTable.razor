@@ -1,0 +1,61 @@
+@if (Dataset is not null)
+{
+    <section class="result-section">
+        <h2>@(string.IsNullOrWhiteSpace(Title) ? Dataset.Name : Title) <span class="row-count">@Dataset.Rows.Count</span></h2>
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        @foreach (var column in Dataset.Columns)
+                        {
+                            <th>@column</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Dataset.Rows.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="@Math.Max(Dataset.Columns.Count, 1)">No rows returned.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var row in Dataset.Rows)
+                        {
+                            <tr>
+                                @foreach (var column in Dataset.Columns)
+                                {
+                                    var value = row.TryGetValue(column, out var cell) ? cell : null;
+                                    <td>
+                                        @if (IsUrl(value))
+                                        {
+                                            <a href="@value" target="_blank" rel="noopener noreferrer">@value</a>
+                                        }
+                                        else
+                                        {
+                                            @(value ?? "")
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public ApiDataset? Dataset { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    private static bool IsUrl(string? value) =>
+        value is not null &&
+        (value.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+         value.StartsWith("https://", StringComparison.OrdinalIgnoreCase));
+}
