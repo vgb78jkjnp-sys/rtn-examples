@@ -1,0 +1,65 @@
+.changelog-badge-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.changelog-badge {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  gap: 0.5rem;
+  border: none;
+  outline: none;
+  xborder: 1px solid #f0ad4e;
+  xborder-radius: 999px;
+  Xbackground: #fff8e6;
+  color:#f0ad4e;
+  font-size: 0.7rem;
+  font-weight: 600;
+  Xpadding: 0.35rem 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 0px 6px rgba(240, 173, 78, 0.25);
+}
+
+.changelog-badge:hover {
+  xbackground: #ffefcc;
+  color:#f0ad4e;
+  xfont-weight: 650;
+}
+
+.changelog-badge .bi-lightbulb {
+  font-size: 1rem;
+  color:#f0ad4e
+}
+
+.changelog-badge:hover .bi-lightbulb {  
+  color: #9b7b25;  
+}
+
+.changelog-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.changelog-item {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.changelog-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.changelog-title {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #212529;
+  margin-bottom: 0.25rem;
+}
+
+.changelog-date {
+  font-size: 0.8rem;
+  color: #6c757d;
+}

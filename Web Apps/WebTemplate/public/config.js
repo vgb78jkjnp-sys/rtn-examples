@@ -1,0 +1,2 @@
+window.APP_CONFIG = {
+};

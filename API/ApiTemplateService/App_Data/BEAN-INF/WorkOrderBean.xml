@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DATABEAN NAME="WORKORDERBEAN" DATASOURCE="Manufacturing">
+	<TRANSACTIONS>
+		<TRANSACTION NAME="WORKORDER">
+			<ACTIONS>
+				<ACTION NAME="READ_BY_WORKORDER_NUMBER" TYPE="P">
+					<STATEMENT>USP_WorkOrderOperationCompleteSearchActive(?,?)</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="WorkOrderNumbers" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="2" NAME="WorkOrderNumberWildCard" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+			</ACTIONS>
+		</TRANSACTION>
+		<TRANSACTION NAME="WORKORDERPARAMETRICS">
+			<ACTIONS>
+				<ACTION NAME="READ_BY_WORKORDER_NUMBER" TYPE="S">
+					<STATEMENT>
+						select wo.WorkOrderNum,wo.RouteId,rd.OperationNumber,rd.OperationId,roop.ParamName,roop.ParamSequence,roop.ParamType
+						,case roop.ParamType
+						when 'int' then CAST(woop.ParamValueInt as varchar(max))
+						when 'float' then CAST(woop.ParamValueFloat as varchar(max))
+						when 'varchar' then isnull(woop.ParamValueVarchar,'')
+						else null
+						end AS ParamValue,
+						'' as EmployeeId
+						from WorkOrder wo WITH (NOLOCK)
+						inner join RouteDetail rd WITH (NOLOCK) on rd.RouteId=wo.RouteId
+						inner join WorkOrderOperation woo WITH (NOLOCK) on wo.WorkOrderNum=woo.WorkOrderNum and rd.RouteId=woo.RouteId and rd.OperationNumber=woo.OperationNumber and rd.OperationId=woo.OperationId
+						inner join RouteOperationOutputParametrics roop WITH (NOLOCK) on roop.RouteId=wo.RouteId and roop.OperationNumber=rd.OperationNumber and roop.OperationId=rd.OperationId
+						left outer join WorkOrderOperationParametrics woop WITH (NOLOCK) on woop.WorkOrderNum=wo.WorkOrderNum and woop.RouteId=roop.RouteId and woop.OperationNumber=roop.OperationNumber and woop.OperationId=roop.OperationId and woop.ParamName=roop.ParamName
+						where (wo.WorkOrderNum in @WorkOrderNumbers or
+						wo.WorkOrderNum like @WorkOrderNumberWildCard or
+						wo.OriginalWorkOrder in @OriginalWorkOrders or
+						wo.OriginalWorkOrder like @OriginalWorkOrderWildCard)
+						and wo.Status='ACTIVE' and woo.CompleteDate is null
+						order by rd.Sequence,roop.ParamSequence
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="WorkOrderNumbers" TYPE="LST"></PARAMETER>
+						<PARAMETER ID="2" NAME="WorkOrderNumberWildCard" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="3" NAME="OriginalWorkOrders" TYPE="LST"></PARAMETER>
+						<PARAMETER ID="4" NAME="OriginalWorkOrderWildCard" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+			</ACTIONS>
+		</TRANSACTION>
+		<TRANSACTION NAME="WORKORDEROPERATION">
+			<ACTIONS>
+				<ACTION NAME="XREAD_BY_WORKORDERNUMBER" TYPE="S">
+					<STATEMENT>
+						select WorkOrder.WorkOrderNum,RouteDetail.RouteId,WorkOrderOperation.OperationNumber,WorkOrderOperation.OperationId,convert(varchar,WorkOrderOperation.StartDate,22) as StartDate,convert(varchar,WorkOrderOperation.CompleteDate,22) as CompleteDate,case when WorkOrderOperation.PassFail=1 then 'Pass' when WorkOrderOperation.PassFail=0 then 'Fail' else '' end as PassFail,PartMaster.EWO,WorkOrderOperation.EmployeeId,convert(varchar,WorkOrderOperation.LastUpdateDate,22) as LastUpdateDate
+						FROM WorkOrder WITH (NOLOCK)
+						INNER JOIN RouteDetail WITH (NOLOCK) ON RouteDetail.RouteId = WorkOrder.RouteId
+						INNER JOIN WorkOrderOperation WITH (NOLOCK) ON WorkOrder.WorkOrderNum = WorkOrderOperation.WorkOrderNum AND RouteDetail.RouteId = WorkOrderOperation.RouteId AND RouteDetail.OperationNumber = WorkOrderOperation.OperationNumber AND RouteDetail.OperationId = WorkOrderOperation.OperationId
+						INNER JOIN PartMaster WITH (NOLOCK) ON PartMaster.PartId = WorkOrder.PartId
+						INNER JOIN PartNumber WITH (NOLOCK) ON PartMaster.PartNumber = PartNumber.PartNumber AND PartMaster.PartNumberRev = PartNumber.PartNumberRev
+						where WorkOrder.WorkOrderNum like @WorkOrderNumbers
+						order by RouteDetail.Sequence
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="WorkOrderNumbers" TYPE="LST"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+				<ACTION NAME="READ_BY_WORKORDERNUMBERS" TYPE="S">
+					<STATEMENT>
+						select top 1000 WorkOrder.WorkOrderNum,RouteDetail.RouteId,WorkOrderOperation.OperationNumber,WorkOrderOperation.OperationId,convert(varchar,WorkOrderOperation.StartDate,22) as StartDate,convert(varchar,WorkOrderOperation.CompleteDate,22) as CompleteDate,case when WorkOrderOperation.PassFail=1 then 'Pass' when WorkOrderOperation.PassFail=0 then 'Fail' else '' end as PassFail,PartMaster.EWO,WorkOrderOperation.EmployeeId,convert(varchar,WorkOrderOperation.LastUpdateDate,22) as LastUpdateDate,isnull(woof.FmaResult,'') as FmaId
+						FROM WorkOrder WITH (NOLOCK)
+						INNER JOIN RouteDetail WITH (NOLOCK) ON RouteDetail.RouteId = WorkOrder.RouteId
+						INNER JOIN WorkOrderOperation WITH (NOLOCK) ON WorkOrder.WorkOrderNum = WorkOrderOperation.WorkOrderNum AND RouteDetail.RouteId = WorkOrderOperation.RouteId AND RouteDetail.OperationNumber = WorkOrderOperation.OperationNumber AND RouteDetail.OperationId = WorkOrderOperation.OperationId
+						INNER JOIN PartMaster WITH (NOLOCK) ON PartMaster.PartId = WorkOrder.PartId
+						INNER JOIN PartNumber WITH (NOLOCK) ON PartMaster.PartNumber = PartNumber.PartNumber AND PartMaster.PartNumberRev = PartNumber.PartNumberRev
+						LEFT JOIN WorkOrderOperationFma woof ON woof.WorkOrderNum=WorkOrder.WorkOrderNum AND woof.RouteId=WorkOrderOperation.RouteId AND woof.OperationNumber=WorkOrderOperation.OperationNumber AND woof.OperationId=WorkOrderOperation.OperationId
+						where (WorkOrder.WorkOrderNum in @WorkOrderNumbers or WorkOrder.WorkOrderNum like @WorkOrderNumberWildCard)
+						order by WorkOrder.WorkOrderNum,RouteDetail.Sequence,OperationNumber
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="WorkOrderNumbers" TYPE="LST"></PARAMETER>
+						<PARAMETER ID="2" NAME="WorkOrderNumberWildCard" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+			</ACTIONS>
+		</TRANSACTION>
+		<TRANSACTION NAME="WORKORDEROPERATIONACTIVE">
+			<ACTIONS>
+				<ACTION NAME="READ_BY_PARTID" TYPE="S">
+					<STATEMENT>
+						select WorkOrder.WorkOrderNum,RouteDetail.RouteId,RouteDetail.OperationNumber,RouteDetail.OperationId,RouteOperationBOM.PartNumber,RouteOperationBOM.PartNumberRev,BOMPN.Description as DescriptionBOM,RouteOperationBOM.Quantity,WorkOrder.PartId as AssemblyPartId,AssyPN.PartId,AssyPN.Quantity as Lot,'' as EmployeeId
+						FROM WorkOrder WITH (NOLOCK)
+						INNER JOIN RouteDetail WITH (NOLOCK) ON RouteDetail.RouteId=WorkOrder.RouteId
+						INNER JOIN WorkOrderOperation WITH (NOLOCK) ON WorkOrder.WorkOrderNum=WorkOrderOperation.WorkOrderNum AND RouteDetail.RouteId=WorkOrderOperation.RouteId AND RouteDetail.OperationNumber=WorkOrderOperation.OperationNumber AND RouteDetail.OperationId=WorkOrderOperation.OperationId
+						INNER JOIN PartMaster WITH (NOLOCK) ON PartMaster.PartId=WorkOrder.PartId
+						INNER JOIN PartNumber WITH (NOLOCK) ON PartMaster.PartNumber=PartNumber.PartNumber AND PartMaster.PartNumberRev=PartNumber.PartNumberRev
+						INNER JOIN RouteOperationBOM WITH (NOLOCK) ON RouteOperationBOM.RouteId=WorkOrder.RouteId AND RouteOperationBOM.OperationNumber=RouteDetail.OperationNumber AND RouteOperationBOM.OperationId=RouteDetail.OperationId AND RouteOperationBOM.SapGoodsIssue=0
+						INNER JOIN BOM WITH (NOLOCK) ON BOM.PartNumber=PartMaster.PartNumber AND BOM.PartNumberRev=PartMaster.PartNumberRev AND BOM.Drawing=RouteOperationBOM.PartNumber AND BOM.DrawingRev=RouteOperationBOM.PartNumberRev
+						INNER JOIN [dbo].[UDF_RouteOperationBomMaxPartNumberRev] () as RouteOperationBomMaxPartNumberRev ON  RouteOperationBomMaxPartNumberRev.RouteId = WorkOrder.RouteId AND RouteOperationBomMaxPartNumberRev.OperationNumber=RouteDetail.OperationNumber AND RouteOperationBomMaxPartNumberRev.OperationId=RouteDetail.OperationId AND RouteOperationBomMaxPartNumberRev.PartNumber=BOM.Drawing AND RouteOperationBomMaxPartNumberRev.PartNumberRev=BOM.DrawingRev
+						INNER JOIN PartNumber BOMPN  WITH (NOLOCK)ON BOMPN.PartNumber=RouteOperationBOM.PartNumber AND BOMPN.PartNumberRev=RouteOperationBOM.PartNumberRev
+						LEFT OUTER JOIN (SELECT PartAssembly.AssemblyPartId,PartAssembly.Quantity,PartMaster.PartNumber AS AssyPartNumber,PartMaster.PartNumberRev AS AssyPartNumberRev,PartAssembly.PartId,PartAssembly.PartId + '(' + convert(varchar,PartAssembly.Quantity) + ')' PartIdQty,PartMaster_1.PartNumber,PartMaster_1.PartNumberRev,WorkOrder.WorkOrderNum
+						FROM PartAssembly WITH (NOLOCK) INNER JOIN PartMaster ON PartAssembly.AssemblyPartId=PartMaster.PartId
+						INNER JOIN WorkOrder WITH (NOLOCK) ON WorkOrder.PartId=PartMaster.PartId
+						INNER JOIN PartMaster AS PartMaster_1 ON PartAssembly.PartId=PartMaster_1.PartId) AS AssyPN ON AssyPN.WorkOrderNum=WorkOrder.WorkOrderNum AND AssyPN.PartNumber=BOM.Drawing
+						WHERE WorkOrder.Status = 'ACTIVE' and WorkOrderOperation.CompleteDate is null
+						and (WorkOrder.WorkOrderNum in @WorkOrderNumbers or
+						WorkOrder.WorkOrderNum like @WorkOrderNumberWildCard or
+						WorkOrder.OriginalWorkOrder in @OriginalWorkOrders or
+						WorkOrder.OriginalWorkOrder like @OriginalWorkOrderWildCard)
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="WorkOrderNumbers" TYPE="LST"></PARAMETER>
+						<PARAMETER ID="2" NAME="WorkOrderNumberWildCard" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="3" NAME="OriginalWorkOrders" TYPE="LST"></PARAMETER>
+						<PARAMETER ID="4" NAME="OriginalWorkOrderWildCard" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+			</ACTIONS>
+		</TRANSACTION>
+		<TRANSACTION NAME="WORKORDEROPERATIONCOMPLETE">
+			<ACTIONS>
+				<ACTION NAME="PROCESS_BATCH_UPDATE" TYPE="P">
+					<STATEMENT>USP_WorkOrderOperationCompleteUpdateBatch(?)</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="xmlParamList" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+			</ACTIONS>
+		</TRANSACTION>
+		<TRANSACTION NAME="WORKORDERNONWIP">
+			<ACTIONS>
+				<ACTION NAME="READ_BY_WORKORDER_NUMBER" TYPE="S">
+					<STATEMENT>
+						WITH CurrentOperation AS (
+						SELECT woo.WorkOrderNum, woo.Sequence, convert(varchar,woo.StartDate,22) as StartDate,convert(varchar,woo.CompleteDate,22) as CompleteDate, case when woo.PassFail=1 then 'Pass' when woo.PassFail=0 then 'Fail' else '' end as PassFail, woo.EmployeeId, woo.LastUpdateDate,
+						ROW_NUMBER() OVER (PARTITION BY wo.OriginalWorkOrder ORDER BY woo.LastUpdateDate DESC,woo.Sequence DESC) AS rn
+						FROM WorkOrderOperation woo WITH (NOLOCK)
+						INNER JOIN WorkOrder wo on wo.WorkOrderNum=Woo.WorkOrderNum
+						WHERE woo.CompleteDate is not null and woo.PassFail=0
+						)
+						SELECT top 1000 wo.WorkOrderNum,
+						co.Sequence,
+						pm.PartNumber,
+						pm.PartNumberRev,
+						pn.Description,
+						rd.RouteId,
+						rd.OperationNumber,
+						rd.OperationId,
+						pm.EWO,
+						woof.FmaResult as FmaId,
+						case when fs.Url is null then woof.Url else fs.url+'/show_bug.cgi?id='+woof.FmaResult end as FmaUrl,
+						wo.OriginalWorkOrder,
+						co.StartDate,
+						co.CompleteDate,
+						co.PassFail,
+						co.EmployeeId,
+						co.LastUpdateDate,
+						pm.PartStatus
+						FROM CurrentOperation co
+						INNER JOIN WorkOrder wo WITH (NOLOCK) ON wo.WorkOrderNum=co.WorkOrderNum
+						INNER JOIN RouteDetail rd WITH (NOLOCK) ON rd.RouteId=wo.RouteId and rd.OperationNumber=co.Sequence and InactiveDate is null
+						INNER JOIN PartMaster pm WITH (NOLOCK) ON pm.PartId=wo.PartId
+						INNER JOIN PartNumber pn WITH (NOLOCK) ON pm.PartNumber=pn.PartNumber AND pm.PartNumberRev=pn.PartNumberRev
+						LEFT JOIN WorkOrderOperationFma woof ON woof.WorkOrderNum=wo.WorkOrderNum AND woof.RouteId=rd.RouteId AND woof.OperationNumber=rd.OperationNumber AND woof.OperationId=rd.OperationId
+						LEFT JOIN FmaServer fs WITH (NOLOCK) ON fs.FmaServer=woof.url
+						WHERE co.rn = 1
+						and (wo.OriginalWorkOrder in @WorkOrderNumbers or wo.OriginalWorkOrder like @WorkOrderNumberWildCard)
+						and wo.Status = 'Completed'
+						and not exists(select 1 from workorder woa where woa.OriginalWorkOrder=wo.OriginalWorkOrder and woa.Status='Active')
+						order by wo.OriginalWorkOrder
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="WorkOrderNumbers" TYPE="LST"></PARAMETER>
+						<PARAMETER ID="2" NAME="WorkOrderNumberWildCard" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+			</ACTIONS>
+		</TRANSACTION>
+		<TRANSACTION NAME="WORKORDERNONWIPOPERATION">
+			<ACTIONS>
+				<ACTION NAME="READ_BY_WORKORDER_NUMBER" TYPE="S">
+					<STATEMENT>
+						WITH CurrentOperation AS (
+						SELECT woo.WorkOrderNum, woo.Sequence, convert(varchar,woo.StartDate,22) as StartDate,convert(varchar,woo.CompleteDate,22) as CompleteDate, case when woo.PassFail=1 then 'Pass' when woo.PassFail=0 then 'Fail' else '' end as PassFail, woo.EmployeeId, woo.LastUpdateDate,
+						ROW_NUMBER() OVER (PARTITION BY wo.OriginalWorkOrder ORDER BY woo.LastUpdateDate DESC,woo.Sequence DESC) AS rn
+						FROM WorkOrderOperation woo WITH (NOLOCK)
+						INNER JOIN WorkOrder wo on wo.WorkOrderNum=Woo.WorkOrderNum
+						WHERE wo.OriginalWorkOrder in @WorkOrderNumbers
+						)
+						SELECT top 1000 wo.WorkOrderNum,
+						co.Sequence,
+						pm.PartNumber,
+						pm.PartNumberRev,
+						pn.Description,
+						rd.RouteId,
+						rd.OperationNumber,
+						rd.OperationId,
+						pm.EWO,
+						woof.FmaResult as FmaId,
+						case when fs.Url is null then woof.Url else fs.url+'/show_bug.cgi?id='+woof.FmaResult end as FmaUrl,
+						wo.OriginalWorkOrder,
+						co.StartDate,
+						co.CompleteDate,
+						co.PassFail,
+						co.EmployeeId,
+						co.LastUpdateDate,
+						pm.PartStatus
+						FROM CurrentOperation co
+						INNER JOIN WorkOrder wo WITH (NOLOCK) ON wo.WorkOrderNum=co.WorkOrderNum
+						INNER JOIN RouteDetail rd WITH (NOLOCK) ON rd.RouteId=wo.RouteId and rd.OperationNumber=co.Sequence and InactiveDate is null
+						INNER JOIN PartMaster pm WITH (NOLOCK) ON pm.PartId=wo.PartId
+						INNER JOIN PartNumber pn WITH (NOLOCK) ON pm.PartNumber=pn.PartNumber AND pm.PartNumberRev=pn.PartNumberRev
+						LEFT JOIN WorkOrderOperationFma woof ON woof.WorkOrderNum=wo.WorkOrderNum AND woof.RouteId=rd.RouteId AND woof.OperationNumber=rd.OperationNumber AND woof.OperationId=rd.OperationId
+						LEFT JOIN FmaServer fs WITH (NOLOCK) ON fs.FmaServer=woof.url
+						WHERE co.rn = 1
+						order by wo.OriginalWorkOrder
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="WorkOrderNumbers" TYPE="LST"></PARAMETER>						
+					</PARAMETERS>
+				</ACTION>
+			</ACTIONS>
+		</TRANSACTION>		
+		<TRANSACTION NAME="WORKORDERMRSI">
+			<ACTIONS>
+				<ACTION NAME="READ_BY_WORKORDER_NUMBER" TYPE="S">
+					<STATEMENT>
+						SELECT MrsiParts.*,wo.PartId as AssemblyPartId,wo.RouteId,woo.OperationNumber
+						FROM (
+						SELECT
+						t.MrsiProgramRunPartsId,
+						(
+						SELECT TOP 1 SubLot.Node.value('.', 'VARCHAR(100)')
+						FROM MrsiProgramRunParts SubTable
+						CROSS APPLY (SELECT CAST(SubTable.Parts AS XML)) AS SubConv(CleanXml)
+						CROSS APPLY SubConv.CleanXml.nodes('//VendorLot') AS SubLot(Node)
+						WHERE SubTable.MrsiProgramRunPartsId = t.MrsiProgramRunPartsId
+						) AS WorkOrderNum,
+						(
+						SELECT TOP 1 SubLot.Node.value('.', 'VARCHAR(100)')
+						FROM MrsiProgramRunParts SubTable
+						CROSS APPLY (SELECT CAST(SubTable.Parts AS XML)) AS SubConv(CleanXml)
+						CROSS APPLY SubConv.CleanXml.nodes('//TrayX') AS SubLot(Node)
+						WHERE SubTable.MrsiProgramRunPartsId = t.MrsiProgramRunPartsId
+						) AS SlotPosition,
+						LotRows.Node.value('../PartId[1]', 'VARCHAR(50)') AS PartId,
+						LotRows.Node.value('.', 'VARCHAR(100)') AS VendorLot
+						FROM MrsiProgramRunParts t
+						CROSS APPLY (
+						SELECT CAST(t.Parts AS XML) AS CleanXml
+						) AS Converted
+						CROSS APPLY Converted.CleanXml.nodes('//VendorLot') AS LotRows(Node)
+						WHERE MrsiProgramRunId >=10258
+						) MrsiParts
+						INNER JOIN WorkOrder wo on wo.WorkOrderNum=MrsiParts.WorkOrderNum
+						INNER JOIN PartMaster pm on pm.VendorLot=MrsiParts.VendorLot
+						INNER JOIN WorkOrderOperation woo ON woo.WorkOrderNum=wo.WorkOrderNum and Sequence = (SELECT MAX(woom.Sequence) FROM WorkOrderOperation woom
+						WHERE woom.WorkOrderNum = wo.WorkOrderNum
+						AND woom.CompleteDate is null)
+						INNER JOIN RouteOperationBOM rob ON rob.RouteId=wo.RouteId and rob.OperationNumber=woo.OperationNumber and rob.OperationId=woo.OperationId and rob.PartNumber=pm.PartNumber
+						WHERE MrsiParts.workordernum &lt;> MrsiParts.vendorlot AND
+						(wo.WorkOrderNum IN @WorkOrderNumbers OR
+						wo.WorkOrderNum LIKE @WorkOrderNumberWildCard OR
+						wo.OriginalWorkOrder IN @OriginalWorkOrders OR
+						wo.OriginalWorkOrder LIKE @OriginalWorkOrderWildCard)
+						ORDER BY MrsiParts.workordernum,MrsiParts.partid
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="WorkOrderNumbers" TYPE="LST"></PARAMETER>
+						<PARAMETER ID="2" NAME="WorkOrderNumberWildCard" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="3" NAME="OriginalWorkOrders" TYPE="LST"></PARAMETER>
+						<PARAMETER ID="4" NAME="OriginalWorkOrderWildCard" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+			</ACTIONS>
+		</TRANSACTION>
+	</TRANSACTIONS>
+</DATABEAN>

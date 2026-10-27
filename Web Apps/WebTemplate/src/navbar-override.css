@@ -1,0 +1,42 @@
+/* Override Bootstrap navbar vertical padding */
+.navbar {
+  --bs-gutter-x: 0 !important;  
+  --bs-navbar-padding-y: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.navbar-brand {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+ --bs-gutter-x: 0 !important;     
+}
+
+
+.form-control {
+  font-size: .7rem;
+}
+
+.btn {
+  font-size: .7rem;
+}
+
+.modal-dialog-content-width {
+    max-width: fit-content; /* Modern browsers */
+    width: auto !important; /* Ensure it overrides default */
+    display: inline-block; /* Required for Bootstrap 3/4 centering */
+}
+
+.partnumberbom-description.list-group, .partnumber-description.list-group {
+  --bs-list-group-item-padding-y: 0.1em !important;
+  --bs-list-group-item-padding-x: 0.9em !important;
+}
+
+
+table.partid-table th {
+  font-weight: 500 !important;
+}

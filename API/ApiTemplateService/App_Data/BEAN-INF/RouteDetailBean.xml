@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DATABEAN NAME="ROUTEDETAILBEAN" DATASOURCE="Manufacturing">
+	<TRANSACTIONS>
+		<TRANSACTION NAME="ROUTEDETAIL">
+			<ACTIONS>
+				<ACTION NAME="READ_BY_ACTIVE_PARTTYPE" TYPE="S">
+					<STATEMENT>
+						SELECT top 2 PartType,RouteId,Sequence,OperationNumber,OperationId
+						FROM [Manufacturing].[dbo].[UDF_RouteDetailActiveByPartTypeStartGroup] (@Module, @EmployeeId)
+						Order by PartType,RouteId,Sequence,OperationNumber,OperationId
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="Module" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="1" NAME="EmployeeId" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+			</ACTIONS>
+		</TRANSACTION>
+	</TRANSACTIONS>
+</DATABEAN>

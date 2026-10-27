@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DATABEAN NAME="PARTMASTERBEAN" DATASOURCE="Manufacturing">
+	<TRANSACTIONS>
+		<TRANSACTION NAME="PARTMASTER">
+			<ACTIONS>
+				<ACTION NAME="READ_BY_PARTID_VENDORLOT" TYPE="S">
+					<STATEMENT>
+						Select [PartId],[VendorId],[VendorLot],[PartNumber],[PartNumberRev],[CurrentPartNumber],[CurrentPartNumberRev],[EntryDate],[EWO],[PartStatus],[Comments],[EmployeeId],[LastUpdateDate],[Quantity],[CustomerPartNumber],[GPStatus],[VendorShipLot],[VendorWaffleId],[VendorWaffleLocation],[PartAssemblyHistoryId]
+						FROM [Manufacturing].[dbo].[UDF_PartMasterAllByPartIdAndVendorLot] (@PartId, @VendorLot)
+						ORDER BY [PartId] desc
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="PartId" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="1" NAME="VendorLot" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+				<ACTION NAME="CHECK_IF_PARTID_EXISTS" TYPE="S">
+					<STATEMENT>
+						select u_robmpnr.PartNumber,pn.PartId,pn.VendorLot,pn.PartStatus,u_robmpnr.Quantity
+						from UDF_RouteOperationBomMaxPartNumberRev() u_robmpnr
+						inner join BOM on BOM.Drawing=u_robmpnr.PartNumber and BOM.DrawingRev=u_robmpnr.PartNumberRev
+						inner join PartMaster pn on pn.PartNumber=u_robmpnr.PartNumber
+						where u_robmpnr.routeid=@RouteId
+						and u_robmpnr.OperationNumber=@OperationNumber
+						and BOM.PartNumber=@PartNumber						
+						and (pn.PartId=@PartId or pn.VendorLot=@VendorLot)
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="RouteId" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="2" NAME="OperationNumber" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="3" NAME="PartNumber" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="4" NAME="PartId" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="5" NAME="VendorLot" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+				<ACTION NAME="PROCESS_BATCH_UPDATE" TYPE="P">
+					<STATEMENT>USP_ReBinUpgradeWithRevUpdateBatch(?)</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="xmlParamList" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+			</ACTIONS>
+		</TRANSACTION>
+	</TRANSACTIONS>
+</DATABEAN>

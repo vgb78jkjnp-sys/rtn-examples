@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<COMMANDS>
+	<COMMAND id="GETWORKORDERNUMBERS" transactiontype="WRITE" outputtype="" viewid="" comment="" >
+		<ACTION id="1" beanname="WORKORDERBEAN" transaction="WORKORDER" action="READ_BY_WORKORDER_NUMBER" />
+		<ACTION id="2" beanname="WORKORDERBEAN" transaction="WORKORDERPARAMETRICS" action="READ_BY_WORKORDER_NUMBER" />
+		<ACTION id="3" beanname="WORKORDERBEAN" transaction="WORKORDEROPERATIONACTIVE" action="READ_BY_PARTID" />
+		<ACTION id="4" beanname="WORKORDERBEAN" transaction="WORKORDERNONWIP" action="READ_BY_WORKORDER_NUMBER" />
+		<ACTION id="5" beanname="WORKORDERBEAN" transaction="WORKORDERMRSI" action="READ_BY_WORKORDER_NUMBER" />
+	</COMMAND>
+	<COMMAND id="GETWORKORDEROPERATION" transactiontype="READ" outputtype="" viewid="" comment="" >
+		<ACTION id="1" beanname="WORKORDERBEAN" transaction="WORKORDEROPERATION" action="READ_BY_WORKORDERNUMBER" />
+	</COMMAND>
+	<COMMAND id="GETWORKORDEROPERATIONS" transactiontype="READ" outputtype="" viewid="" comment="" >
+		<ACTION id="1" beanname="WORKORDERBEAN" transaction="WORKORDEROPERATION" action="READ_BY_WORKORDERNUMBERS" />
+	</COMMAND>
+	<COMMAND id="PROCESSWORKORDEROPERATIONCOMPLETEUPDATE" transactiontype="READ" outputtype="" viewid="" comment="" >
+		<ACTION id="1" beanname="WORKORDERBEAN" transaction="WORKORDEROPERATIONCOMPLETE" action="PROCESS_BATCH_UPDATE" />
+	</COMMAND>
+	<COMMAND id="GETPARTIDVENDORLOT" transactiontype="READ" outputtype="" viewid="" comment="" >
+		<ACTION id="1" beanname="PARTMASTERBEAN" transaction="PARTMASTER" action="READ_BY_PARTID_VENDORLOT" />
+	</COMMAND>
+	<COMMAND id="VALIDATEATTACHPARTID" transactiontype="READ" outputtype="" viewid="" comment="" >
+		<ACTION id="1" beanname="PARTMASTERBEAN" transaction="PARTMASTER" action="CHECK_IF_PARTID_EXISTS" />
+	</COMMAND>
+	<COMMAND id="PROCESSREBINUPGRADEWITHREVUPDATE" transactiontype="READ" outputtype="" viewid="" comment="" >
+		<ACTION id="1" beanname="PARTMASTERBEAN" transaction="PARTMASTER" action="PROCESS_BATCH_UPDATE" />
+	</COMMAND>
+	<COMMAND id="GETNONWIPWORKORDERNUMBERS" transactiontype="READ" outputtype="" viewid="" comment="" >
+		<ACTION id="4" beanname="WORKORDERBEAN" transaction="WORKORDERNONWIPOPERATION" action="READ_BY_WORKORDER_NUMBER" />
+	</COMMAND>
+	<COMMAND id="GETROUTEOPERATIONPARAMETRIC" transactiontype="READ" outputtype="" viewid="" comment="" >
+		<ACTION id="1" beanname="ROUTEOPERATIONBEAN" transaction="PARAMETRIC" action="READ_BY_ROUTE_OPERATION" />
+	</COMMAND>
+</COMMANDS>

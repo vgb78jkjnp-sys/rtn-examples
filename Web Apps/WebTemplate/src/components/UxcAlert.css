@@ -1,0 +1,122 @@
+.uxc-alert-modal {
+  max-width: min(400px, 96vw);
+}
+
+.uxc-alert-modal:has(.uxc-alert-pedigree-line),
+.uxc-alert-modal:has(.uxc-alert-detail) {
+  max-width: min(560px, 96vw);
+}
+
+.uxc-alert-content {
+  border: 0;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(8, 31, 68, 0.28);
+  background: linear-gradient(180deg, #f7fbff 0%, #eef5ff 100%);
+}
+
+.uxc-alert-header {
+  background: linear-gradient(135deg, #124191 0%, #2e78d2 100%);
+  color: #ffffff;
+  border-bottom: 0;
+  padding: 0.7rem 1.5rem;
+}
+
+.uxc-alert-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.uxc-alert-header .btn-close {
+  filter: invert(1) brightness(200%);
+  opacity: 0.9;
+}
+
+.uxc-alert-header .btn-close:hover {
+  opacity: 1;
+}
+
+.uxc-alert-body {
+  padding: .5rem 1.1rem .5rem;
+}
+
+.uxc-alert-footer {
+  border-top: 0;
+  background: linear-gradient(180deg, #f7fbff 0%, #eef5ff 100%);
+  padding: .4rem 1.1rem 1.2rem;
+  justify-content: center;
+}
+
+.uxc-alert-ok-button {
+  min-width: 96px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.4rem 1.25rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #ffffff;
+  background: linear-gradient(135deg, #124191 0%, #2e78d2 100%);
+  box-shadow: 0 10px 24px rgba(18, 65, 145, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.uxc-alert-ok-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(18, 65, 145, 0.32);
+}
+
+.uxc-alert-ok-button:active {
+  transform: translateY(0);
+}
+
+.uxc-alert-ok-button:focus-visible {
+  outline: 2px solid #7fb2ff;
+  outline-offset: 2px;
+}
+
+.uxc-alert-box {
+  border: 0;
+  border-radius: 12px;
+  padding: 0.95rem 1rem;
+  font-size: 0.95rem;
+  line-height: 1.45;  
+  font-size:.9rem;
+}
+
+.uxc-alert-box.alert-success {
+  background: #eaf4ff;
+  color: #12315e;
+}
+
+.uxc-alert-box.alert-danger {
+  background: #fff0f2;
+  color: #7d1d31;
+}
+
+.uxc-alert-box.alert-warning {
+  background: inherit;
+  color: #694b00;
+}
+
+.uxc-alert-box.alert-info {
+  background: #e8f6ff;
+  color: #104a68;
+}
+
+.uxc-alert-detail {
+  text-align: center;
+}
+
+.uxc-alert-detail-intro {
+  display: block;
+  margin-bottom: 0.5rem;
+  white-space: normal;
+}
+
+.uxc-alert-pedigree-line {
+  display: block;
+  white-space: nowrap;
+  overflow-x: auto;
+  text-align: center;
+}

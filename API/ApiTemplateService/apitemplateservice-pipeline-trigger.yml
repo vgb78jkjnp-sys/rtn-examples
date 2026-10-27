@@ -1,0 +1,29 @@
+﻿# This pipeline is triggered by a commit to the master branch of the ApiTemplateService repository and uses a template 
+# defined in the Web Apps repository to build and deploy the ApiTemplateService application to both development and production 
+# environments. The pipeline is configured to use the latest Windows image for the build agent and targets .NET 8.x.
+
+trigger:
+- master
+
+resources:
+  repositories:
+    - repository: WebAppsTemplates
+      type: git
+      name: 'Web Apps/Web Apps'
+      ref: main
+
+stages:
+- template: webapps-pipeline-main.yml@WebAppsTemplates
+  parameters:
+    TriggerRepoName: 'ApiTemplateService'
+    poolName: 'windows-latest'
+    buildConfiguration: 'Release'
+    solution: 'ApiTemplateService.csproj'
+    publishDir: '$(Build.ArtifactStagingDirectory)/publish'
+    environmentdev: 'api-dev'
+    environmentprod: 
+    - api-prod1
+    applicationRootFolder: 'Mes\Api\'
+    applicationFolder: 'ApiTemplateService'
+    netVersion: '8.x'
+    nugetConfigPath: 'NuGet.config'

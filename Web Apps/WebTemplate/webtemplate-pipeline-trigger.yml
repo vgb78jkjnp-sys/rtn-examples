@@ -1,0 +1,28 @@
+# Azure DevOps pipeline trigger for the WebTemplate project
+# This pipeline is triggered on changes to the main branch and uses the WebAppsTemplates repository for shared templates.
+# The pipeline uses the webapps-pipeline-main-spa.yml template from the WebAppsTemplates repository.
+#
+# Change TriggerRepoName and applicationFolder to match your project structure
+trigger:
+- main
+
+resources:
+  repositories:
+    - repository: WebAppsTemplates
+      type: git
+      name: 'Web Apps/Web Apps'
+      ref: main
+
+stages:
+- template: webapps-pipeline-main-spa.yml@WebAppsTemplates
+  parameters:
+    TriggerRepoName: 'WebTemplate'
+    poolName: 'windows-latest'
+    publishDir: '$(Build.ArtifactStagingDirectory)/publish'
+    environmentdev: 'webapps-dev3'
+    environmentprod: 'webapps-prod1'
+    applicationRootFolder: 'Mes\Apps\'
+    applicationFolder: 'WebTemplate'
+    nodeVersion: '20.x'
+    workingDirectory: '.'
+    buildOutputFolder: 'dist'

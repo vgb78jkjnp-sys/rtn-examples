@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DATABEAN NAME="ROUTEOPERATIONBEAN" DATASOURCE="Manufacturing">
+	<TRANSACTIONS>
+		<TRANSACTION NAME="PARAMETRIC">
+			<ACTIONS>
+				<ACTION NAME="READ_BY_ROUTE_OPERATION" TYPE="S">
+					<STATEMENT>
+						select RouteId,OperationNumber,OperationId,ParamName,ParamSequence,ParamType
+						from RouteOperationOutputParametrics
+						where RouteId=@RouteId
+						and OperationNumber=@OperationNumber
+						and OperationId=@OperationId
+						order by ParamSequence
+					</STATEMENT>
+					<PARAMETERS>
+						<PARAMETER ID="1" NAME="RouteId" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="2" NAME="OperationNumber" TYPE="STRING"></PARAMETER>
+						<PARAMETER ID="3" NAME="OperationId" TYPE="STRING"></PARAMETER>
+					</PARAMETERS>
+				</ACTION>
+			</ACTIONS>
+		</TRANSACTION>
+	</TRANSACTIONS>
+</DATABEAN>

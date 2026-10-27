@@ -1,0 +1,39 @@
+.uxc-form-date-picker-popper .react-datepicker {
+  background-color: #eaf3ff;
+  border: 1px solid #9ec5fe;
+}
+
+.uxc-form-date-picker-popper .react-datepicker__header {
+  background-color: #d7e9ff;
+  border-bottom: 1px solid #9ec5fe;
+}
+
+.uxc-form-date-picker-popper .react-datepicker__day--selected,
+.uxc-form-date-picker-popper .react-datepicker__day--keyboard-selected {
+  background-color: #3d8bfd;
+  color: #fff;
+}
+
+.uxc-form-adornment {
+  position: relative;
+}
+
+.uxc-form-adornment > .form-control,
+.uxc-form-adornment > .form-select {
+  padding-right: 2.5rem;
+}
+
+.uxc-form-adornment__end {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  transform: translateY(-50%);
+}
+
+.uxc-form-date-picker-popper .react-datepicker__day:hover,
+.uxc-form-date-picker-popper .react-datepicker__day--keyboard-selected:hover {
+  background-color: #9ec5fe;
+}
