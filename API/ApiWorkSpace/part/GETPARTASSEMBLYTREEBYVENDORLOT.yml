@@ -1,0 +1,21 @@
+info:
+  name: GETPARTASSEMBLYTREEBYVENDORLOT
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{host}}/api/partservice/GETPARTASSEMBLYTREEBYVENDORLOT"
+  body:
+    type: json
+    data: |-
+      {
+        "VendorLot": "XXM-00169721"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

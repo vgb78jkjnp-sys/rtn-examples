@@ -1,0 +1,25 @@
+info:
+  name: GETPARTMASTERROWS
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{host}}/api/partservice/GETPARTMASTERROWS"
+  body:
+    type: json
+    data: |-
+      {
+        "PartId": "20260908%",
+        "VendorLot": "%",
+        "VendorShipLot": "%",
+        "PartNumber": "%",
+        "MaxRows": 1000
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

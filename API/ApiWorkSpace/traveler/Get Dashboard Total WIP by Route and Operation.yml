@@ -1,0 +1,21 @@
+info:
+  name: Get Dashboard Total WIP by Route and Operation
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{host}}/api/travelerservice/GETDASHBOARDWIPTOTALBYOPERATION"
+  body:
+    type: json
+    data: |-
+      {
+        "RouteId": "TROSA_ICEXR4_PROD2"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

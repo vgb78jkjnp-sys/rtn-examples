@@ -1,0 +1,22 @@
+info:
+  name: GETSAPIREPOSTERRORS
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{host}}/api/sapinterfaceservice/GETSAPIREPOSTERRORS"
+  body:
+    type: json
+    data: |-
+      {
+        "SerialNum": "",
+        "MaxRows": 1000
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

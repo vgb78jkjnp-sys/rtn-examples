@@ -1,0 +1,22 @@
+info:
+  name: Get Total WIP by Route and Operation
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{host}}/api/travelerservice/GETWIPTOTALBYOPERATION"
+  body:
+    type: json
+    data: |-
+      {
+        "RouteId": "TROSA_ICEXR4_PROD2",
+        "OperationNumber": "6550"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

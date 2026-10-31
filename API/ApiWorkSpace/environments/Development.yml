@@ -1,0 +1,4 @@
+name: Development
+variables:
+  - name: host
+    value: http://PA-MFGWEB-Dev3:8090

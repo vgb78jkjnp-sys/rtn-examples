@@ -1,0 +1,21 @@
+info:
+  name: Get Non WIP and Operation Work Orders
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{host}}/api/workorderservice/GETNONWIPWORKORDERNUMBERS"
+  body:
+    type: json
+    data: |
+      {
+          "WorkOrderNumbers":"XXM-00110165,XXM-00110167"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

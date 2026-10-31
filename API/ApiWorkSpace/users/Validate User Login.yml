@@ -1,0 +1,22 @@
+info:
+  name: Validate User Login
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{host}}/api/userservice/login"
+  body:
+    type: json
+    data: |-
+      {
+          "UserId":"asolano",
+          "Password":"asolano"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

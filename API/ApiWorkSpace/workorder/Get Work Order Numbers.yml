@@ -1,0 +1,24 @@
+info:
+  name: Get Work Order Numbers
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{host}}/api/workorderservice/GETWORKORDERNUMBERS"
+  body:
+    type: json
+    data: |
+      {
+          "WorkOrderNumbers":"XXM-00110167,XXM-00110168,XXM-00108494",
+          "WorkOrderNumberWildCard":"",
+          "OriginalWorkOrders":"XXM-00110167,XXM-00110168,XXM-00108494",
+          "OriginalWorkOrderWildCard":""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

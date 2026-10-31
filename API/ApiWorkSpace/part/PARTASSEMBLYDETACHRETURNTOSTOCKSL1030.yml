@@ -1,0 +1,24 @@
+info:
+  name: PARTASSEMBLYDETACHRETURNTOSTOCKSL1030
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{host}}/api/partservice/PARTASSEMBLYDETACHRETURNTOSTOCKSL1030"
+  body:
+    type: json
+    data: |-
+      {
+        "AssemblyPartId": "",
+        "PartId": "",
+        "Quantity": -1,
+        "EmployeeId": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

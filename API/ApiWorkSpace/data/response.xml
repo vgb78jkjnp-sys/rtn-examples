@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<UpdateParameters UserId="asolano"
+                  UpdateType="Pass">
+    <Operations>
+        <PassFail>
+            <WorkOrderNum>XXM-00110165</WorkOrderNum>
+            <RouteId>TROSA_ICEXR4_PROD2</RouteId>
+            <OperationNumber>6550</OperationNumber>
+            <OperationId>DC Flex attach</OperationId>
+            <PassFail>1</PassFail>
+            <FmaServer />
+            <FmaOperation>DC Flex attach</FmaOperation>
+            <EmployeeId>asolano</EmployeeId>
+            <FmaDescription />
+            <FmaSummary />
+            <FmaResult />
+        </PassFail>
+    </Operations>
+</UpdateParameters>

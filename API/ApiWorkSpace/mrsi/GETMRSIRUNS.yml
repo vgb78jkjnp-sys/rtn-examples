@@ -1,0 +1,27 @@
+info:
+  name: GETMRSIRUNS
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{host}}/api/mrsiservice/GETMRSIRUNS"
+  body:
+    type: json
+    data: |-
+      {
+        "DateStart": "2026-08-07T00:00:00",
+        "DateEnd": "2026-09-04T23:59:59",
+        "MachineId": "hld%",
+        "ProgramName": "%",
+        "PkgSerialNumber": "%",
+        "OnlyMissingShopFlowAttachments": "N",
+        "MissingShopFlowPartName": "%"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
