@@ -1,0 +1,72 @@
+.login-field {
+  position: relative;
+  margin-bottom: .5rem;
+}
+
+.login-field__input {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #bdbdbd;
+  border-radius: 0;
+  padding: 1.4rem 0 0.45rem;
+  background: transparent;
+  font-size: .9rem;
+  line-height: 1.4;
+  outline: none;
+  box-shadow: none;
+}
+
+.login-field__input:focus {
+  border-bottom-color: #317ef1;
+  box-shadow: none;
+}
+
+.login-field__input:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.login-field__label {
+  position: absolute;
+  left: 0;  
+  top: 1.15rem;
+  color: #9e9e9e;
+  font-size: 1rem;
+  line-height: 1;
+  pointer-events: none;
+  transition: top 0.2s ease, font-size 0.2s ease, color 0.2s ease;
+}
+
+.login-field__input:focus + .login-field__label,
+.login-field__input:not(:placeholder-shown) + .login-field__label {
+  top: 0;
+  font-size: 0.75rem;
+}
+
+.login-field__input:focus + .login-field__label {
+  color: #317ef1;
+}
+
+.login-field--password .login-field__input {
+  padding-right: 2rem;
+}
+
+.login-field__toggle {
+  position: absolute;
+  right: 0;
+  bottom: 0.35rem;
+  border: none;
+  background: transparent;
+  color: #757575;
+  padding: 0.25rem;
+  line-height: 1;
+}
+
+.login-field__toggle:hover:not(:disabled) {
+  color: #424242;
+}
+
+.login-field__toggle:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}

@@ -1,0 +1,23 @@
+trigger:
+- main
+
+resources:
+  repositories:
+    - repository: WebAppsTemplates
+      type: git
+      name: 'Web Apps/Web Apps'
+      ref: main
+
+stages:
+- template: webapps-pipeline-main-spa.yml@WebAppsTemplates
+  parameters:
+    TriggerRepoName: 'Inventory'
+    poolName: 'windows-latest'
+    publishDir: '$(Build.ArtifactStagingDirectory)/publish'
+    environmentdev: 'webapps-dev3'
+    environmentprod: 'webapps-prod1'
+    applicationRootFolder: 'Mes\Apps\'
+    applicationFolder: 'Inventory'
+    nodeVersion: '20.x'
+    workingDirectory: '.'
+    buildOutputFolder: 'dist'
